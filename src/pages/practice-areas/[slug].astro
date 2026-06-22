@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import Button from '../../components/Button.astro';
+import PracticeAreaCard from '../../components/PracticeAreaCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CTABand from '../../components/CTABand.astro';
+import { practiceAreas, type PracticeArea } from '../../data/practice-areas';
+import { whatsappLink } from '../../data/site';
+
+export function getStaticPaths() {
+  return practiceAreas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }));
+}
+
+interface Props {
+  area: PracticeArea;
+}
+const { area } = Astro.props;
+const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
+const consultMessage = `Hello BCK Advocates, I'd like to discuss a ${area.title} matter.`;
+---
+<BaseLayout title={area.title} description={area.metaDescription}>
+  <PageHero
+    eyebrow="Practice Area"
+    title={area.title}
+    lead={area.summary}
+    image={area.image}
+    crumbs={[
+      { label: 'Home', href: '/' },
+      { label: 'Practice Areas', href: '/practice-areas/' },
+      { label: area.shortTitle },
+    ]}
+  />
+
+  <section class="bg-white py-20 sm:py-24">
+    <div class="wrap grid gap-12 lg:grid-cols-3 lg:gap-16">
+      <!-- Main -->
+      <div class="lg:col-span-2">
+        <SectionHeading eyebrow="Overview" title={`How we advise on ${area.shortTitle.toLowerCase()}`} />
+        <div class="mt-5 space-y-4 text-base leading-relaxed text-ink/75 sm:text-lg">
+          {area.intro.map((para) => <p>{para}</p>)}
+        </div>
+
+        <h3 class="mt-12 text-xl font-semibold text-navy">What we handle</h3>
+        <ul class="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+          {area.capabilities.map((cap) => (
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/12 text-brand-ink">
+                <Icon name="check" size={16} />
+              </span>
+              <span class="text-sm leading-relaxed text-ink/80">{cap}</span>
+            </li>
+          ))}
+        </ul>
+
+        <h3 class="mt-12 text-xl font-semibold text-navy">Who we advise</h3>
+        <div class="mt-5 flex flex-wrap gap-3">
+          {area.idealFor.map((who) => (
+            <span class="inline-flex items-center gap-2 rounded-full border border-line bg-mist px-4 py-2 text-sm font-medium text-navy">
+              <span class="h-1.5 w-1.5 rounded-full bg-brand"></span>{who}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Sticky sidebar -->
+      <aside class="lg:col-span-1">
+        <div class="sticky top-28 space-y-6">
+          <div class="rounded-2xl bg-navy p-7 text-white shadow-card">
+            <h3 class="text-xl font-semibold text-white">Discuss a {area.shortTitle.toLowerCase()} matter</h3>
+            <p class="mt-3 text-sm leading-relaxed text-white/75">
+              Tell us briefly about your situation and we'll arrange a consultation with the right
+              practitioner.
+            </p>
+            <div class="mt-6 flex flex-col gap-3">
+              <Button href={`/contact/?area=${encodeURIComponent(area.title)}`} variant="light">Request a Consultation</Button>
+              <Button href={whatsappLink(consultMessage)} variant="whatsapp" target="_blank">
+                <Icon name="whatsapp" size={20} /> WhatsApp Us
+              </Button>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-line p-7">
+            <h3 class="font-display text-sm font-semibold uppercase tracking-[0.18em] text-navy">Other practice areas</h3>
+            <ul class="mt-4 space-y-1">
+              {practiceAreas
+                .filter((a) => a.slug !== area.slug)
+                .map((a) => (
+                  <li>
+                    <a
+                      href={`/practice-areas/${a.slug}/`}
+                      class="group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-ink/80 transition hover:bg-mist hover:text-navy"
+                    >
+                      <span class="flex items-center gap-3">
+                        <Icon name={a.icon} size={18} class="text-brand-ink" />
+                        {a.shortTitle}
+                      </span>
+                      <Icon name="chevron-right" size={16} class="text-ink/30 transition group-hover:translate-x-0.5 group-hover:text-brand-ink" />
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Related -->
+  <section class="bg-mist py-20 sm:py-24">
+    <div class="wrap">
+      <SectionHeading eyebrow="Explore more" title="Related practice areas" />
+      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((a) => <PracticeAreaCard area={a} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTABand title={`Need advice on a ${area.shortTitle.toLowerCase()} matter?`} />
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+import { stats } from '../data/site';
+---
+<section class="bg-navy py-12 sm:py-14">
+  <div class="wrap reveal-stagger grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+    {stats.map((s) => (
+      <div data-reveal class="flex flex-col items-center text-center lg:border-l lg:border-white/10 lg:first:border-l-0">
+        <div data-count={s.value} class="font-display text-4xl font-semibold tracking-tight text-sky-light sm:text-5xl">{s.value}</div>
+        <div class="mt-2 max-w-[12rem] text-sm leading-snug text-white/70">{s.label}</div>
+      </div>
+    ))}
+  </div>
+</section>

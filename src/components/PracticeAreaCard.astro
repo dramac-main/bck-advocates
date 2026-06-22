@@ -1,0 +1,40 @@
+---
+import type { PracticeArea } from '../data/practice-areas';
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+
+interface Props {
+  area: PracticeArea;
+}
+const { area } = Astro.props;
+const href = `/practice-areas/${area.slug}/`;
+---
+<a
+  href={href}
+  data-reveal
+  class="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+>
+  <div class="relative aspect-[16/10] overflow-hidden">
+    <Img
+      name={area.image}
+      alt={`${area.title} — BCK Advocates`}
+      class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+      widths={[400, 600, 800]}
+      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/60 to-transparent"></div>
+    <span
+      class="absolute left-4 top-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-brand text-white shadow-md ring-1 ring-white/15"
+    >
+      <Icon name={area.icon} size={26} />
+    </span>
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <h3 class="text-xl font-semibold text-navy">{area.title}</h3>
+    <p class="mt-2 flex-1 text-sm leading-relaxed text-ink/70">{area.summary}</p>
+    <span class="mt-5 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-ink">
+      Explore practice area
+      <Icon name="arrow-right" size={18} class="transition-transform duration-300 group-hover:translate-x-1" />
+    </span>
+  </div>
+</a>

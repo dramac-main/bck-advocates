@@ -1,0 +1,49 @@
+---
+/**
+ * BCK brand lockup — the firm's classic serif wordmark, rebuilt as HTML + a tiny
+ * inline SVG so it recolours cleanly for dark and light contexts. The "BCK" tile
+ * is the firm's lettermark (also the favicon); the wordmark uses the display serif.
+ *
+ * `variant="light"` → white wordmark (for dark/navy backgrounds).
+ * `variant="dark"`  → navy wordmark (for light backgrounds).
+ * The root element sets BOTH the height (drives the square tile) and the font-size
+ * (the em base for the wordmark) — e.g. class="h-9 text-[1.1rem]".
+ */
+interface Props {
+  variant?: 'light' | 'dark';
+  class?: string;
+  tile?: boolean;
+}
+const { variant = 'light', class: className = '', tile = true } = Astro.props;
+const onDark = variant === 'light';
+const nameTone = onDark ? 'text-white' : 'text-navy';
+const subTone = onDark ? 'text-white/60' : 'text-ink/55';
+---
+<span class={`inline-flex items-center gap-2.5 ${className}`}>
+  {tile && (
+    <svg viewBox="0 0 64 64" class="h-full w-auto shrink-0" role="img" aria-label="BCK">
+      <path d="M0 0 H44 A20 20 0 0 1 64 20 V64 H20 A20 20 0 0 1 0 44 Z" fill="#11689b" />
+      <text
+        x="32"
+        y="34"
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-family="'Source Serif 4 Variable','Source Serif 4',Georgia,'Times New Roman',serif"
+        font-size="25"
+        font-weight="700"
+        letter-spacing="-0.5"
+        fill="#ebeced"
+      >BCK</text>
+    </svg>
+  )}
+  <span class="flex flex-col leading-none">
+    <span class={`font-display text-[0.95em] font-semibold leading-[1.04] tracking-tight ${nameTone}`}>
+      Barnaby, Chitundu &amp; Khunga
+    </span>
+    <span
+      class={`mt-[0.4em] hidden text-[0.32em] font-semibold uppercase leading-none tracking-[0.22em] sm:block ${subTone}`}
+    >
+      Advocates &amp; Commissioners for Oaths
+    </span>
+  </span>
+</span>

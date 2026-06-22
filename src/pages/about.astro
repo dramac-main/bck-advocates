@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Img from '../components/Img.astro';
+import Icon from '../components/Icon.astro';
+import Button from '../components/Button.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatsBand from '../components/StatsBand.astro';
+import CTABand from '../components/CTABand.astro';
+import { mission, vision, coreValues, approach, valueCommitments, whoWeAre } from '../data/content';
+
+const credentials = [
+  { icon: 'scales', label: 'Advocates of the High Court & Supreme Court of Zambia' },
+  { icon: 'shield', label: 'Members of the Law Association of Zambia' },
+  { icon: 'oaths', label: 'Commissioners for Oaths' },
+  { icon: 'briefcase', label: 'Seven practice areas under one roof' },
+];
+---
+<BaseLayout
+  title="About Us"
+  description="Barnaby, Chitundu & Khunga Advocates is a Lusaka law firm of Advocates of the High Court and Supreme Court of Zambia and Commissioners for Oaths — clear, dependable counsel built on integrity, diligence and discretion."
+>
+  <PageHero
+    eyebrow="About Us"
+    title="A trusted firm of advocates in Lusaka"
+    lead="Built on integrity, diligence and a genuine care for the outcome of every matter we accept."
+    image="about-firm.jpg"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'About' }]}
+  />
+
+  <!-- Story -->
+  <section class="bg-white py-20 sm:py-24 lg:py-28">
+    <div class="wrap grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <SectionHeading eyebrow="Our story" title={whoWeAre.heading} />
+        <div class="mt-5 space-y-4 text-base leading-relaxed text-ink/75 sm:text-lg">
+          {whoWeAre.paragraphs.map((p) => <p>{p}</p>)}
+        </div>
+        <figure class="mt-7 rounded-2xl border border-line bg-mist p-6 sm:p-7">
+          <Icon name="quote" size={28} class="text-brand-ink" />
+          <blockquote class="mt-3 font-display text-lg italic leading-relaxed text-navy">
+            {whoWeAre.callout}
+          </blockquote>
+        </figure>
+      </div>
+      <div class="relative">
+        <div class="overflow-hidden rounded-2xl shadow-card">
+          <Img
+            name="about-story.jpg"
+            alt="Barnaby, Chitundu & Khunga Advocates at work in Lusaka"
+            class="aspect-[4/5] w-full object-cover"
+            widths={[500, 800, 1100]}
+            sizes="(min-width: 1024px) 45vw, 90vw"
+          />
+        </div>
+        <div class="absolute -left-4 -top-4 -z-10 hidden h-40 w-40 rounded-2xl border-2 border-brand/40 sm:block"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="relative isolate overflow-hidden bg-navy py-20 sm:py-24">
+    <div class="absolute inset-0 -z-10 bg-grid opacity-50"></div>
+    <div class="wrap grid gap-8 lg:grid-cols-2">
+      <div data-reveal class="rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-sky text-navy">
+          <Icon name="target" size={28} />
+        </span>
+        <h2 class="mt-5 text-2xl font-semibold text-white">Our mission</h2>
+        <p class="mt-3 leading-relaxed text-white/75">{mission}</p>
+      </div>
+      <div data-reveal class="rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10">
+        <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-sky text-navy">
+          <Icon name="scales" size={28} />
+        </span>
+        <h2 class="mt-5 text-2xl font-semibold text-white">Our vision</h2>
+        <p class="mt-3 leading-relaxed text-white/75">{vision}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core values -->
+  <section class="bg-mist py-20 sm:py-24 lg:py-28">
+    <div class="wrap">
+      <SectionHeading eyebrow="What we stand for" title="Our core values" align="center" />
+      <div class="mt-14 grid gap-8 reveal-stagger sm:grid-cols-2 lg:grid-cols-3">
+        {coreValues.map((v) => (
+          <div data-reveal class="rounded-xl border border-line bg-white p-7 shadow-card">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-brand text-white">
+              <Icon name={v.icon} size={24} />
+            </span>
+            <h3 class="mt-5 text-lg font-semibold text-navy">{v.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink/70">{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Client-centred approach -->
+  <section class="bg-white py-20 sm:py-24 lg:py-28">
+    <div class="wrap">
+      <SectionHeading
+        eyebrow="How we work"
+        title="A proactive, client-centred approach"
+        intro="We work closely with our clients at every stage — understanding the matter fully, advising candidly and keeping you informed throughout."
+        class="max-w-2xl"
+      />
+      <ol class="mt-14 grid gap-6 reveal-stagger sm:grid-cols-2 lg:grid-cols-5">
+        {approach.map((s) => (
+          <li data-reveal class="relative rounded-2xl border border-line bg-mist/60 p-6">
+            <div class="font-display text-4xl font-semibold text-brand/80">{s.n}</div>
+            <h3 class="mt-3 text-base font-semibold text-navy">{s.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink/70">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="mt-12 rounded-2xl bg-navy p-8 sm:p-10">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div class="max-w-md">
+            <h3 class="text-xl font-semibold text-white">What you can expect from us</h3>
+            <p class="mt-2 text-sm leading-relaxed text-white/70">
+              On every matter we accept, we hold ourselves to a clear set of commitments — so you
+              always know what working with the firm will be like.
+            </p>
+          </div>
+          <ul class="grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            {valueCommitments.map((c) => (
+              <li class="flex items-center gap-3 text-sm text-white/85">
+                <Icon name="check" size={18} class="shrink-0 text-sky-light" /> {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <StatsBand />
+
+  <!-- Credentials -->
+  <section class="bg-navy-deep py-12">
+    <div class="wrap grid grid-cols-2 gap-8 text-center md:grid-cols-4">
+      {credentials.map((c) => (
+        <div class="flex flex-col items-center gap-3">
+          <Icon name={c.icon} size={30} class="text-sky-light" />
+          <span class="font-display text-sm font-semibold leading-snug text-white">{c.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Team CTA -->
+  <section class="bg-white py-20 sm:py-24">
+    <div class="wrap flex flex-col items-start gap-6 rounded-3xl border border-line bg-mist p-8 sm:p-12 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <SectionHeading eyebrow="Our people" title="Meet the team behind the practice" />
+        <p class="mt-4 text-ink/75">
+          Partners and practitioners — from the founding partners to our practitioners and interns —
+          ready to advise on your matter with care and diligence.
+        </p>
+      </div>
+      <Button href="/team/" variant="primary" size="lg">Meet the team <Icon name="arrow-right" size={18} /></Button>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

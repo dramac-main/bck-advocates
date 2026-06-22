@@ -1,0 +1,39 @@
+---
+import type { TeamMember } from '../data/team';
+
+/**
+ * Photo-free team card. There are no photographs of the firm's people, so we use
+ * a tasteful monogram (initials) panel in brand blue rather than stock/AI faces.
+ * Bios are clearly-marked placeholders until the firm supplies the real profiles.
+ */
+interface Props {
+  member: TeamMember;
+}
+const { member } = Astro.props;
+---
+<article
+  data-reveal
+  class="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift"
+>
+  <div class="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-gradient-to-br from-brand to-navy">
+    <div class="absolute inset-0 bg-grid opacity-40"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/45 to-transparent"></div>
+    <span
+      aria-hidden="true"
+      class="relative font-display text-[3.5rem] font-semibold leading-none tracking-tight text-cloud transition-transform duration-500 group-hover:scale-105 sm:text-6xl"
+    >{member.initials}</span>
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <h3 class="font-display text-xl font-semibold text-navy">{member.name}</h3>
+    <p class="mt-0.5 text-sm font-semibold text-brand-ink">{member.role}</p>
+    {member.credentials && (
+      <p class="mt-2 text-xs font-medium uppercase tracking-wide text-ink/55">{member.credentials}</p>
+    )}
+    <p class="mt-3 flex-1 text-sm leading-relaxed text-ink/75">{member.bio}</p>
+    {member.placeholder && (
+      <p class="mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-line bg-mist px-3 py-1 text-[0.7rem] font-medium uppercase tracking-wide text-ink/55">
+        <span class="h-1.5 w-1.5 rounded-full bg-brand/60"></span>Full profile to be confirmed
+      </p>
+    )}
+  </div>
+</article>

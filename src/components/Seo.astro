@@ -1,0 +1,81 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+const {
+  title,
+  description = site.description,
+  image = '/og-image.jpg',
+  type = 'website',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+const isHome = Astro.url.pathname === '/';
+const fullTitle = isHome ? `${site.name} — ${site.tagline}` : `${title} | ${site.shortName}`;
+
+const sameAs = [site.socials.facebook, site.socials.linkedin, site.socials.instagram].filter(Boolean);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'LegalService',
+  name: site.name,
+  legalName: site.legalName,
+  description: site.description,
+  url: site.url,
+  slogan: site.tagline,
+  telephone: site.contact.phone,
+  email: site.contact.email,
+  image: ogImage,
+  logo: new URL('/favicon.svg', Astro.site).href,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${site.address.street}, ${site.address.area}`,
+    addressLocality: site.address.city,
+    addressRegion: site.address.province,
+    addressCountry: site.address.countryCode,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: site.address.geo.lat,
+    longitude: site.address.geo.lng,
+  },
+  areaServed: { '@type': 'Country', name: 'Zambia' },
+  knowsLanguage: 'en',
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '17:00',
+    },
+  ],
+  ...(sameAs.length ? { sameAs } : {}),
+};
+---
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="en_ZM" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

@@ -1,0 +1,76 @@
+---
+import Icon from './Icon.astro';
+import { site, whatsappLink } from '../data/site';
+
+/**
+ * Floating quick-actions speed-dial. All destinations come from site.ts
+ * (single source of truth); all colours use brand tokens.
+ */
+const actions: { label: string; icon: string; href: string; tone: string; external?: boolean }[] = [
+  { label: 'Request a Consultation', icon: 'arrow-right', href: '/contact/', tone: 'brand' },
+  { label: 'WhatsApp us', icon: 'whatsapp', href: whatsappLink(), tone: 'whatsapp', external: true },
+  { label: 'Call us', icon: 'phone', href: site.contact.mobileHref, tone: 'navy' },
+  { label: 'Email us', icon: 'mail', href: `mailto:${site.contact.email}`, tone: 'navy' },
+];
+const toneClass: Record<string, string> = {
+  brand: 'bg-brand text-white',
+  whatsapp: 'bg-whatsapp text-white',
+  navy: 'bg-navy text-white',
+};
+---
+<div id="quick-actions" class="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5 sm:bottom-6 sm:right-6">
+  <!-- Compact popover (never full-screen) -->
+  <div id="qa-menu" class="flex flex-col items-end gap-2" aria-label="Quick actions">
+    {actions.map((a) => (
+      <a
+        href={a.href}
+        class="qa-item group inline-flex items-center gap-2.5 rounded-full bg-white py-1.5 pl-4 pr-1.5 shadow-lift ring-1 ring-black/5 transition hover:-translate-y-0.5"
+        {...(a.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      >
+        <span class="whitespace-nowrap font-display text-[0.82rem] font-semibold text-navy">{a.label}</span>
+        <span class:list={['inline-flex h-8 w-8 items-center justify-center rounded-full', toneClass[a.tone]]}>
+          <Icon name={a.icon} size={16} />
+        </span>
+      </a>
+    ))}
+  </div>
+
+  <!-- Toggle -->
+  <button
+    type="button"
+    id="qa-toggle"
+    class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand text-white shadow-lift ring-1 ring-black/5 transition hover:scale-105 hover:bg-brand-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+    aria-label="Open quick actions"
+    aria-expanded="false"
+    aria-controls="qa-menu"
+  >
+    <Icon name="plus" size={22} class="qa-fab-icon transition-transform duration-300" />
+  </button>
+</div>
+
+<script>
+  const wrap = document.getElementById('quick-actions');
+  const toggle = document.getElementById('qa-toggle');
+  const menu = document.getElementById('qa-menu');
+  if (wrap && toggle && menu) {
+    const setOpen = (open: boolean) => {
+      wrap.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close quick actions' : 'Open quick actions');
+    };
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(!wrap.classList.contains('is-open'));
+    });
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('click', (e) => {
+      if (!wrap.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrap.classList.contains('is-open')) {
+        setOpen(false);
+        (toggle as HTMLButtonElement).focus();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import Button from '../components/Button.astro';
+import { site, fullAddress, whatsappLink } from '../data/site';
+import { practiceAreas } from '../data/practice-areas';
+
+const inputCls =
+  'mt-1.5 w-full rounded-lg border border-line bg-white px-4 py-3 text-ink shadow-sm outline-none transition placeholder:text-ink/40 focus:border-brand focus:ring-2 focus:ring-brand/25';
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.address.mapQuery)}&output=embed`;
+
+const details = [
+  { icon: 'phone', label: 'Call us (landline)', value: site.contact.phone, href: site.contact.phoneHref },
+  { icon: 'phone', label: 'Mobile / WhatsApp', value: site.contact.mobile, href: site.contact.mobileHref },
+  { icon: 'mail', label: 'Email us', value: site.contact.email, href: `mailto:${site.contact.email}` },
+  { icon: 'location', label: 'Visit us', value: fullAddress(), href: mapSrc.replace('&output=embed', '') },
+];
+---
+<BaseLayout
+  title="Contact"
+  description="Contact Barnaby, Chitundu & Khunga Advocates in Burma Residential Area, Lusaka — request a consultation, call, email or message us on WhatsApp. We respond promptly and in confidence."
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Request a consultation"
+    lead="Tell us about your matter and we'll arrange a consultation with the right practitioner — promptly, and in confidence."
+    image="contact-office.jpg"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Contact' }]}
+  />
+
+  <section class="bg-white py-20 sm:py-24">
+    <div class="wrap grid gap-12 lg:grid-cols-5 lg:gap-16">
+      <!-- Form -->
+      <div class="lg:col-span-3">
+        <h2 class="text-2xl font-semibold text-navy sm:text-3xl">Send us your enquiry</h2>
+        <p class="mt-3 text-ink/70">Fill in the form and we'll get back to you. Fields marked * are required. Your message is treated in confidence.</p>
+
+        <!-- Web3Forms: set site.web3formsKey in src/data/site.ts with your free key from web3forms.com -->
+        <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="mt-8">
+          <input type="hidden" name="access_key" value={site.web3formsKey} />
+          <input type="hidden" name="subject" value="New website enquiry — BCK Advocates" />
+          <input type="hidden" name="from_name" value={site.name} />
+          <!-- honeypot -->
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="name" class="text-sm font-medium text-navy">Full name *</label>
+              <input id="name" name="name" type="text" required autocomplete="name" class={inputCls} placeholder="Your name" />
+            </div>
+            <div>
+              <label for="phone" class="text-sm font-medium text-navy">Phone</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" class={inputCls} placeholder="+260 …" />
+            </div>
+            <div>
+              <label for="email" class="text-sm font-medium text-navy">Email *</label>
+              <input id="email" name="email" type="email" required autocomplete="email" class={inputCls} placeholder="you@example.com" />
+            </div>
+            <div>
+              <label for="area" class="text-sm font-medium text-navy">Area of interest</label>
+              <select id="area" name="practice_area" class={inputCls}>
+                <option value="General enquiry">General enquiry</option>
+                {practiceAreas.map((a) => <option value={a.title}>{a.title}</option>)}
+                <option value="Multiple / not sure">Multiple / not sure</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-5">
+            <label for="message" class="text-sm font-medium text-navy">How can we help? *</label>
+            <textarea id="message" name="message" required rows="5" class={inputCls} placeholder="Briefly describe your matter, and we'll point you to the right practitioner…"></textarea>
+          </div>
+
+          <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <button
+              type="submit"
+              class="group inline-flex items-center justify-center gap-2 rounded-md bg-brand px-7 py-4 font-display text-[0.95rem] font-semibold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-brand-light hover:shadow-lift focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span class="js-btn-label">Send enquiry</span>
+              <Icon name="arrow-right" size={18} class="transition-transform group-hover:translate-x-1" />
+            </button>
+            <p id="form-result" role="status" aria-live="polite" class="text-sm font-medium"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Details -->
+      <div class="lg:col-span-2">
+        <div class="rounded-2xl bg-mist p-7 sm:p-8">
+          <h2 class="text-xl font-semibold text-navy">Speak to us directly</h2>
+          <ul class="mt-6 space-y-5">
+            {details.map((d) => (
+              <li>
+                <a href={d.href} class="group flex items-start gap-4" {...(d.icon === 'location' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                  <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand text-white">
+                    <Icon name={d.icon} size={20} />
+                  </span>
+                  <span>
+                    <span class="block text-xs uppercase tracking-wider text-ink/70">{d.label}</span>
+                    <span class="block font-medium text-navy transition-colors group-hover:text-brand-ink">{d.value}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div class="mt-7 border-t border-line pt-6">
+            <Button href={whatsappLink()} variant="whatsapp" size="lg" class="w-full" target="_blank">
+              <Icon name="whatsapp" size={20} /> Chat on WhatsApp
+            </Button>
+          </div>
+
+          <div class="mt-7 border-t border-line pt-6">
+            <h3 class="flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-[0.18em] text-navy">
+              <Icon name="clock" size={18} class="text-brand-ink" /> Office hours
+            </h3>
+            <ul class="mt-4 space-y-2 text-sm">
+              {site.hours.map((h) => (
+                <li class="flex justify-between gap-4">
+                  <span class="text-ink/70">{h.days}</span>
+                  <span class="font-medium text-navy">{h.time}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-4 text-xs text-ink/60">Postal: {site.address.postal}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section aria-label="Our location" class="bg-mist">
+    <iframe
+      title={`Map showing ${site.name}`}
+      src={mapSrc}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      class="block h-[380px] w-full border-0 sm:h-[440px]"
+    ></iframe>
+  </section>
+</BaseLayout>
+
+<script>
+  // Pre-select the practice area when arriving from a "Request a Consultation" link (/contact/?area=…)
+  const params = new URLSearchParams(location.search);
+  const presetArea = params.get('area');
+  if (presetArea) {
+    const sel = document.getElementById('area') as HTMLSelectElement | null;
+    if (sel && Array.from(sel.options).some((o) => o.value === presetArea)) sel.value = presetArea;
+  }
+
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const result = document.getElementById('form-result');
+  if (form && result) {
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const label = form.querySelector('.js-btn-label');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      result.textContent = 'Sending…';
+      result.className = 'text-sm font-medium text-ink/60';
+      if (btn) btn.disabled = true;
+      if (label) label.textContent = 'Sending…';
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.success) {
+          result.textContent = "Thank you — your enquiry has been received. We'll be in touch shortly.";
+          result.className = 'text-sm font-medium text-brand-ink';
+          form.reset();
+        } else {
+          result.textContent = json.message || 'Something went wrong. Please try again or message us on WhatsApp.';
+          result.className = 'text-sm font-medium text-red-600';
+        }
+      } catch {
+        result.textContent = 'Network error. Please try again or message us on WhatsApp.';
+        result.className = 'text-sm font-medium text-red-600';
+      } finally {
+        if (btn) btn.disabled = false;
+        if (label) label.textContent = 'Send enquiry';
+      }
+    });
+  }
+</script>

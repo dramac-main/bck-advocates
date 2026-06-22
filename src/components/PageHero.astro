@@ -1,0 +1,56 @@
+---
+import Img from './Img.astro';
+import Icon from './Icon.astro';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  image?: string;
+  crumbs?: Crumb[];
+}
+const { eyebrow, title, lead, image = 'hero-generic.jpg', crumbs = [] } = Astro.props;
+---
+<section class="relative isolate overflow-hidden bg-navy">
+  <div class="absolute inset-0 -z-10">
+    <Img
+      name={image}
+      alt=""
+      class="h-full w-full object-cover opacity-25"
+      widths={[800, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-navy/55"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/85 via-transparent to-transparent"></div>
+  </div>
+  <div class="wrap hero-stagger pb-16 pt-28 sm:pb-20 sm:pt-32 lg:pb-28 lg:pt-40">
+    {crumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-white/60">
+          {crumbs.map((c, i) => (
+            <li class="flex items-center gap-2">
+              {c.href ? (
+                <a href={c.href} class="transition-colors hover:text-sky-light">{c.label}</a>
+              ) : (
+                <span class="text-white/90">{c.label}</span>
+              )}
+              {i < crumbs.length - 1 && <Icon name="chevron-right" size={14} class="text-white/30" />}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    {eyebrow && (
+      <span class="mb-4 inline-flex items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.2em] text-sky-light">
+        <span class="brand-rule bg-sky"></span>{eyebrow}
+      </span>
+    )}
+    <h1 class="max-w-3xl text-4xl font-semibold text-white sm:text-5xl lg:text-6xl">{title}</h1>
+    {lead && <p class="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-white/80 sm:text-base lg:text-lg">{lead}</p>}
+  </div>
+</section>

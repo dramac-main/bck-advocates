@@ -1,0 +1,159 @@
+---
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { site, whatsappLink } from '../data/site';
+
+const nav = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Practice Areas', href: '/practice-areas/' },
+  { label: 'Our Team', href: '/team/' },
+  { label: 'Contact', href: '/contact/' },
+];
+
+const path = Astro.url.pathname;
+const isActive = (href: string): boolean =>
+  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
+---
+<header id="site-header" class="fixed inset-x-0 top-0 z-50">
+  <div class="wrap flex h-16 items-center justify-between gap-4 sm:h-20">
+    <a href="/" class="flex shrink-0 items-center" aria-label={`${site.name} — home`}>
+      <Logo variant="light" class="h-9 text-[1.02rem] sm:h-10 sm:text-[1.2rem]" />
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden lg:block" aria-label="Primary">
+      <ul class="flex items-center gap-8">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class:list={[
+                'relative font-display text-sm font-medium tracking-wide transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:bg-sky after:transition-all hover:text-white',
+                isActive(item.href) ? 'text-white after:w-full' : 'text-white/75 after:w-0 hover:after:w-full',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <div class="hidden lg:block">
+        <Button href="/contact/" variant="light" size="md">Request a Consultation</Button>
+      </div>
+      <button
+        type="button"
+        id="menu-open"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 lg:hidden"
+        aria-label="Open menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <Icon name="menu" size={26} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile drawer — a sibling of <header> (NOT nested), so `fixed inset-0`
+     covers the full viewport instead of being clamped by the header's backdrop-filter. -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[60] flex flex-col bg-navy lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site menu"
+>
+  <div class="wrap flex h-16 items-center justify-between sm:h-20">
+    <Logo variant="light" class="h-9 text-[1.02rem]" />
+    <button
+      type="button"
+      id="menu-close"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10"
+      aria-label="Close menu"
+    >
+      <Icon name="close" size={28} />
+    </button>
+  </div>
+  <nav class="wrap flex flex-1 flex-col pt-2" aria-label="Mobile">
+    <ul class="flex flex-col divide-y divide-white/10 border-y border-white/10">
+      {nav.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'menu-link flex items-center justify-between py-4 font-display text-lg font-semibold transition-colors',
+              isActive(item.href) ? 'text-sky-light' : 'text-white hover:text-sky-light',
+            ]}
+          >
+            {item.label}
+            <Icon name="chevron-right" size={20} class="text-white/40" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-8 flex flex-col gap-3">
+      <Button href="/contact/" variant="light" size="lg">Request a Consultation</Button>
+      <Button href={whatsappLink()} variant="whatsapp" size="lg" target="_blank">
+        <Icon name="whatsapp" size={20} /> Chat on WhatsApp
+      </Button>
+      <a href={site.contact.mobileHref} class="mt-2 inline-flex items-center gap-2 text-white/80 hover:text-white">
+        <Icon name="phone" size={18} class="text-sky-light" /> {site.contact.mobile}
+      </a>
+    </div>
+  </nav>
+</div>
+
+<script>
+  // Header: transparent→solid on scroll, and slides away on scroll-down / returns on scroll-up
+  const header = document.getElementById('site-header');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastY = window.scrollY;
+  let ticking = false;
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (header) {
+      header.classList.toggle('is-scrolled', y > 12);
+      if (!reduceMotion) {
+        if (y > lastY && y > 240) header.classList.add('is-hidden');
+        else if (y < lastY) header.classList.remove('is-hidden');
+      }
+    }
+    lastY = y;
+    ticking = false;
+  };
+  onScroll();
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(onScroll);
+      }
+    },
+    { passive: true },
+  );
+
+  // Mobile drawer
+  const openBtn = document.getElementById('menu-open');
+  const closeBtn = document.getElementById('menu-close');
+  const menu = document.getElementById('mobile-menu');
+  const setOpen = (open: boolean) => {
+    if (!menu || !openBtn) return;
+    menu.classList.toggle('is-open', open);
+    openBtn.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  };
+  openBtn?.addEventListener('click', () => setOpen(true));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+</script>

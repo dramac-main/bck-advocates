@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Img from '../../components/Img.astro';
+import Icon from '../../components/Icon.astro';
+import Button from '../../components/Button.astro';
+import CTABand from '../../components/CTABand.astro';
+import { practiceAreas } from '../../data/practice-areas';
+
+const total = String(practiceAreas.length).padStart(2, '0');
+---
+<BaseLayout
+  title="Practice Areas"
+  description="Explore the practice areas of BCK Advocates — litigation & dispute resolution, corporate & commercial, conveyancing & property, employment & labour, family, debt recovery and Commissioner for Oaths & notarial services in Zambia."
+>
+  <PageHero
+    eyebrow="Practice Areas"
+    title="Comprehensive counsel, across seven disciplines"
+    lead="Whatever your matter, our advocates bring focused expertise — so you have a single, trusted partner from first advice to final resolution."
+    image="practice-litigation.jpg"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Practice Areas' }]}
+  />
+
+  <section class="bg-white py-16 sm:py-20 lg:py-24">
+    <div class="wrap lg:grid lg:grid-cols-2 lg:gap-16">
+      <!-- Sticky media column (desktop): crossfades to the active area -->
+      <div class="hidden lg:block">
+        <div class="sticky top-24 h-[72vh] overflow-hidden rounded-3xl shadow-card">
+          {practiceAreas.map((area, i) => (
+            <Img
+              name={area.image}
+              alt=""
+              data-img={`${i}`}
+              class:list={[
+                'area-swap-img absolute inset-0 h-full w-full object-cover transition-opacity duration-700',
+                i === 0 ? 'opacity-100' : 'opacity-0',
+              ]}
+              widths={[500, 800, 1100]}
+              sizes="45vw"
+              loading="eager"
+            />
+          ))}
+          <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/85 via-navy/10 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-7">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-[0.2em] text-sky-light">Now viewing</div>
+              <div data-active-title class="mt-1 font-display text-2xl font-semibold text-white">{practiceAreas[0].title}</div>
+            </div>
+            <div class="font-display text-sm font-semibold text-white/70">
+              <span data-active-index>01</span> / {total}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrolling area blocks -->
+      <div>
+        {practiceAreas.map((area, i) => (
+          <article
+            id={area.slug}
+            data-area={`${i}`}
+            data-title={area.title}
+            data-reveal="right"
+            class="scroll-mt-28 border-b border-line py-10 first:pt-0 last:border-0 lg:py-[9vh] lg:first:pt-0"
+          >
+            <div class="mb-6 overflow-hidden rounded-2xl shadow-card lg:hidden">
+              <Img
+                name={area.image}
+                alt={`${area.title} — BCK Advocates`}
+                class="aspect-[16/10] w-full object-cover"
+                widths={[400, 700]}
+                sizes="90vw"
+              />
+            </div>
+            <span class="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-brand text-white">
+              <Icon name={area.icon} size={28} />
+            </span>
+            <h2 class="mt-5 text-3xl font-semibold text-navy sm:text-4xl">{area.title}</h2>
+            <p class="mt-4 text-base leading-relaxed text-ink/75 sm:text-lg">{area.summary}</p>
+            <ul class="mt-6 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              {area.capabilities.slice(0, 4).map((cap) => (
+                <li class="flex items-start gap-3 text-sm text-ink/80">
+                  <Icon name="check" size={18} class="mt-0.5 shrink-0 text-brand-ink" />
+                  <span>{cap}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-8">
+              <Button href={`/practice-areas/${area.slug}/`} variant="primary">
+                Learn more <Icon name="arrow-right" size={18} />
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>
+
+<script>
+  const blocks = Array.from(document.querySelectorAll('[data-area]'));
+  const imgs = Array.from(document.querySelectorAll('.area-swap-img'));
+  const titleEl = document.querySelector('[data-active-title]');
+  const idxEl = document.querySelector('[data-active-index]');
+
+  if (blocks.length && imgs.length) {
+    const setActive = (idx: number) => {
+      imgs.forEach((img, k) => {
+        img.classList.toggle('opacity-100', k === idx);
+        img.classList.toggle('opacity-0', k !== idx);
+      });
+      const b = blocks[idx];
+      if (titleEl && b) titleEl.textContent = b.getAttribute('data-title') || '';
+      if (idxEl) idxEl.textContent = String(idx + 1).padStart(2, '0');
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(Number(e.target.getAttribute('data-area')));
+        });
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+    );
+    blocks.forEach((b) => io.observe(b));
+  }
+</script>

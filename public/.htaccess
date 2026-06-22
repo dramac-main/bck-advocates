@@ -1,0 +1,39 @@
+# Barnaby, Chitundu & Khunga Advocates — Apache config for static hosting (cPanel / shared)
+
+# --- HTTPS + www canonicalisation (uncomment once the domain & SSL are live) ---
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# --- Clean URLs: serve /about/ as /about/index.html (Astro 'directory' format) ---
+Options -MultiViews
+DirectoryIndex index.html
+
+# --- Custom 404 ---
+ErrorDocument 404 /404.html
+
+# --- Compression ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Long-cache hashed assets, revalidate HTML ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# --- Security headers ---
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

@@ -1,0 +1,56 @@
+---
+import type { HTMLTag } from 'astro/types';
+/** Eyebrow (blue-rule motif) + heading + optional intro. */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  align?: 'left' | 'center';
+  dark?: boolean;
+  as?: HTMLTag;
+  reveal?: 'up' | 'left' | 'right' | 'scale';
+  class?: string;
+}
+const {
+  eyebrow,
+  title,
+  intro,
+  align = 'left',
+  dark = false,
+  as = 'h2',
+  reveal = 'up',
+  class: className = '',
+} = Astro.props as Props;
+const Tag = as;
+const alignCls = align === 'center' ? 'items-center text-center mx-auto max-w-2xl' : 'items-start text-left';
+---
+<div data-reveal={reveal} class={`flex flex-col ${alignCls} ${className}`}>
+  {eyebrow && (
+    <span
+      class:list={[
+        'mb-4 inline-flex items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.2em]',
+        dark ? 'text-sky-light' : 'text-brand-ink',
+      ]}
+    >
+      <span class:list={['brand-rule', dark ? 'bg-sky' : 'bg-brand']}></span>{eyebrow}
+    </span>
+  )}
+  <Tag
+    class:list={[
+      'text-3xl font-semibold sm:text-4xl lg:text-[2.85rem] lg:leading-[1.08]',
+      dark ? 'text-white' : 'text-navy',
+    ]}
+  >
+    {title}
+  </Tag>
+  {intro && (
+    <p
+      class:list={[
+        'mt-4 max-w-2xl text-base leading-relaxed sm:text-lg',
+        dark ? 'text-white/70' : 'text-ink/75',
+      ]}
+    >
+      {intro}
+    </p>
+  )}
+</div>

@@ -1,0 +1,49 @@
+---
+/** Link styled as a button. Slot in the label (and optionally an <Icon/>). */
+interface Props {
+  href: string;
+  variant?: 'primary' | 'light' | 'outline' | 'outline-light' | 'whatsapp' | 'ghost';
+  size?: 'md' | 'lg';
+  class?: string;
+  target?: string;
+  rel?: string;
+  'aria-label'?: string;
+}
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  class: className = '',
+  target,
+  rel,
+  ...rest
+} = Astro.props;
+
+const base =
+  'group inline-flex items-center justify-center gap-2 font-display font-semibold tracking-wide rounded-md transition duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand';
+
+const sizes: Record<string, string> = {
+  md: 'px-5 py-3 text-sm',
+  lg: 'px-7 py-4 text-[0.95rem]',
+};
+
+const variants: Record<string, string> = {
+  // brand-blue solid — for light sections
+  primary: 'bg-brand text-white hover:bg-brand-light shadow-sm hover:-translate-y-0.5 hover:shadow-lift',
+  // white solid — the "pop" CTA on dark/navy sections
+  light: 'bg-white text-navy hover:bg-cloud shadow-sm hover:-translate-y-0.5 hover:shadow-lift',
+  // outline — light sections
+  outline: 'border border-brand/30 text-brand-ink hover:border-brand hover:bg-brand/5',
+  // outline — dark sections
+  'outline-light': 'border border-white/40 text-white hover:border-white hover:bg-white/10',
+  whatsapp: 'bg-whatsapp text-white hover:bg-whatsapp-dark shadow-sm hover:-translate-y-0.5',
+  ghost: 'text-brand-ink hover:text-brand',
+};
+
+const isExternal = /^https?:\/\//.test(href);
+const relAttr = rel ?? (target === '_blank' || isExternal ? 'noopener noreferrer' : undefined);
+const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+---
+<a href={href} class={cls} target={target} rel={relAttr} {...rest}>
+  <slot />
+</a>

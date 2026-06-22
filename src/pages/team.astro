@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import TeamCard from '../components/TeamCard.astro';
+import CTABand from '../components/CTABand.astro';
+import { team } from '../data/team';
+---
+<BaseLayout
+  title="Our Team"
+  description="Meet the people of Barnaby, Chitundu & Khunga Advocates — the founding partners, the Managing Partner, our legal practitioners and interns serving clients across Lusaka and Zambia."
+>
+  <PageHero
+    eyebrow="Our Team"
+    title="The people behind the practice"
+    lead="The partners and practitioners of the firm — committed to careful, dependable work on every matter."
+    image="team-group.jpg"
+    crumbs={[{ label: 'Home', href: '/' }, { label: 'Our Team' }]}
+  />
+
+  <section class="bg-white py-20 sm:py-24 lg:py-28">
+    <div class="wrap">
+      <SectionHeading
+        eyebrow="Our people"
+        title="Partners, practitioners & interns"
+        intro="Detailed profiles and photographs are being finalised with the firm. In the meantime, here are the people you will be working with."
+        class="max-w-2xl"
+      />
+      <div class="mt-12 grid gap-8 reveal-stagger sm:grid-cols-2 lg:grid-cols-3">
+        {team.map((member) => <TeamCard member={member} />)}
+      </div>
+    </div>
+  </section>
+
+  <CTABand title="Looking for the right advocate for your matter?" />
+</BaseLayout>

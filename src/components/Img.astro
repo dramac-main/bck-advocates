@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Optimised image with a graceful fallback.
+ * Pass `name` = a filename in src/assets/images/. If the file isn't there yet,
+ * a clean branded placeholder renders instead (so the site always builds).
+ * Astro generates responsive WebP/AVIF when the real file is present.
+ */
+interface Props {
+  name: string;
+  alt: string;
+  class?: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+const {
+  name,
+  alt,
+  class: className = '',
+  widths,
+  sizes,
+  loading = 'lazy',
+  fetchpriority,
+} = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+const img = images[`/src/assets/images/${name}`]?.default;
+const extra = fetchpriority ? { fetchpriority } : {};
+---
+{
+  img ? (
+    <Image
+      src={img}
+      alt={alt}
+      class={className}
+      loading={loading}
+      decoding="async"
+      {...(widths ? { widths } : {})}
+      {...(sizes ? { sizes } : {})}
+      {...extra}
+    />
+  ) : (
+    <div
+      class={`relative flex items-center justify-center overflow-hidden bg-navy bg-grid ${className}`}
+      role="img"
+      aria-label={alt}
+    >
+      <span class="pointer-events-none select-none px-6 text-center font-display text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-sky-light/90">
+        {alt || 'BCK Advocates'}
+      </span>
+    </div>
+  )
+}

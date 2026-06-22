@@ -1,0 +1,103 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import QuickActions from '../components/QuickActions.astro';
+import Seo from '../components/Seo.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+const { title, description, image, noindex } = Astro.props;
+---
+<!doctype html>
+<html lang="en-ZM">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#11689b" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo title={title} description={description} image={image} noindex={noindex} />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:font-display focus:font-semibold focus:text-navy"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <QuickActions />
+
+    <script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scroll-reveal
+      const reveals = document.querySelectorAll('[data-reveal]');
+      if (reduce || !('IntersectionObserver' in window)) {
+        reveals.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                obs.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.12 },
+        );
+        reveals.forEach((el) => io.observe(el));
+      }
+
+      // Animated counters (numeric values only; e.g. "HC · SC" stays static)
+      const counters = document.querySelectorAll('[data-count]');
+      const animateCount = (el: Element) => {
+        const raw = el.getAttribute('data-count') || '';
+        const match = raw.match(/^(\d+)(\D*)$/);
+        if (!match) return;
+        const target = parseInt(match[1], 10);
+        const suffix = match[2] || '';
+        const duration = 1500;
+        const start = performance.now();
+        const step = (now: number) => {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(eased * target) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      if (counters.length && !reduce && 'IntersectionObserver' in window) {
+        counters.forEach((el) => {
+          const m = (el.getAttribute('data-count') || '').match(/^(\d+)(\D*)$/);
+          if (m) el.textContent = '0' + (m[2] || '');
+        });
+        const cio = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                animateCount(entry.target);
+                obs.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.4 },
+        );
+        counters.forEach((el) => cio.observe(el));
+      }
+    </script>
+  </body>
+</html>
