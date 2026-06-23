@@ -15,31 +15,46 @@ import { whyChooseUs, approach, whoWeAre } from '../data/content';
 const teamTeaser = team.slice(0, 3);
 ---
 <BaseLayout title="Home">
-  <!-- Hero — two-column editorial lockup -->
-  <section class="relative isolate overflow-hidden bg-navy pb-16 pt-28 sm:pt-32 lg:pb-24 lg:pt-40">
-    <div class="absolute inset-0 -z-10 bg-grid opacity-40"></div>
-    <div class="absolute -left-40 -top-24 -z-10 h-[28rem] w-[28rem] rounded-full bg-brand/25 blur-3xl"></div>
-    <div class="absolute -bottom-24 right-0 -z-10 h-80 w-80 rounded-full bg-sky/10 blur-3xl"></div>
+  <!-- Hero — two-column editorial on desktop, compact full-bleed ken-burns on mobile -->
+  <section class="relative isolate flex min-h-[92svh] items-center overflow-hidden bg-navy pb-12 pt-24 sm:min-h-[88svh] lg:min-h-[88vh] lg:items-center lg:pb-20 lg:pt-32">
+    <!-- Mobile / tablet: full-bleed background image with slow ken-burns -->
+    <div class="absolute inset-0 -z-10 lg:hidden">
+      <Img
+        name="hero-home.jpg"
+        alt=""
+        class="hero-kenburns h-full w-full object-cover object-top"
+        widths={[480, 768, 1024, 1440]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-navy/90 via-navy/78 to-navy-deep/90"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-navy/85 via-navy/40 to-transparent"></div>
+    </div>
+    <!-- Desktop: subtle texture + brand glows -->
+    <div class="absolute inset-0 -z-10 hidden bg-grid opacity-40 lg:block"></div>
+    <div class="absolute -left-40 -top-24 -z-10 hidden h-[28rem] w-[28rem] rounded-full bg-brand/25 blur-3xl lg:block"></div>
+    <div class="absolute -bottom-24 right-0 -z-10 hidden h-80 w-80 rounded-full bg-sky/10 blur-3xl lg:block"></div>
 
-    <div class="wrap grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+    <div class="wrap grid w-full items-center gap-12 lg:grid-cols-12 lg:gap-10">
       <!-- Text -->
       <div class="hero-stagger lg:col-span-7">
-        <span class="inline-flex items-center gap-3 font-display text-xs font-semibold uppercase tracking-[0.2em] text-sky-light">
-          <span class="brand-rule bg-sky"></span>Barnaby, Chitundu &amp; Khunga Advocates · Lusaka, Zambia
+        <span class="inline-flex items-center gap-3 font-display text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-sky-light sm:text-xs sm:tracking-[0.2em]">
+          <span class="brand-rule bg-sky"></span>BCK Advocates · Lusaka, Zambia
         </span>
-        <h1 class="mt-5 max-w-2xl text-4xl font-semibold leading-[1.06] text-white sm:text-5xl lg:text-[3.65rem]">
+        <h1 class="mt-5 max-w-2xl text-[2rem] font-semibold leading-[1.08] text-white sm:text-5xl lg:text-[3.65rem] lg:leading-[1.06]">
           Clear advice and dependable advocacy, when it matters most.
         </h1>
-        <p class="mt-6 max-w-xl text-[0.95rem] leading-relaxed text-white/85 sm:text-base lg:text-lg">
+        <p class="mt-5 max-w-xl text-[0.95rem] leading-relaxed text-white/85 sm:text-base lg:mt-6 lg:text-lg">
           A Lusaka firm of Advocates of the High Court and Supreme Court of Zambia and Commissioners
           for Oaths — litigation, corporate, conveyancing, employment, family, debt recovery and
           notarial services, under one roof.
         </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row lg:mt-9">
           <Button href="/contact/" variant="light" size="lg">Request a Consultation</Button>
           <Button href="/practice-areas/" variant="outline-light" size="lg">Explore Practice Areas</Button>
         </div>
-        <p class="mt-9 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/10 pt-6 text-xs text-white/55">
+        <p class="mt-9 hidden flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/10 pt-6 text-xs text-white/55 lg:flex">
           <span class="font-semibold text-white/75">Advocates of the High Court &amp; Supreme Court of Zambia</span>
           <span class="text-sky/60">·</span>
           <span>Members of the Law Association of Zambia</span>
@@ -48,21 +63,21 @@ const teamTeaser = team.slice(0, 3);
         </p>
       </div>
 
-      <!-- Image panel -->
-      <div class="relative lg:col-span-5">
+      <!-- Image panel (desktop only — on mobile the photo is the background) -->
+      <div class="relative hidden lg:col-span-5 lg:block">
         <div class="relative overflow-hidden rounded-2xl shadow-lift ring-1 ring-white/15">
           <Img
             name="hero-home.jpg"
             alt="An Advocate of the High Court of Zambia in wig and gown"
             class="aspect-[4/5] w-full object-cover object-top"
             widths={[480, 720, 960]}
-            sizes="(min-width: 1024px) 40vw, 90vw"
+            sizes="40vw"
             loading="eager"
             fetchpriority="high"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/55 via-transparent to-transparent"></div>
         </div>
-        <div class="absolute -bottom-5 -left-3 hidden rounded-xl bg-white p-5 shadow-lift sm:block lg:-left-8">
+        <div class="absolute -bottom-5 -left-8 rounded-xl bg-white p-5 shadow-lift">
           <div class="font-display text-base font-semibold leading-tight text-navy">Advocates &amp; Commissioners<br />for Oaths</div>
           <div class="mt-1 flex items-center gap-2 text-xs text-ink/60">
             <Icon name="scales" size={15} class="text-brand-ink" /> High &amp; Supreme Court of Zambia
@@ -70,12 +85,16 @@ const teamTeaser = team.slice(0, 3);
         </div>
       </div>
     </div>
+
+    <a href="#intro" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 transition-colors hover:text-white/80 lg:hidden" aria-label="Scroll to content">
+      <Icon name="chevron-right" size={26} class="rotate-90" />
+    </a>
   </section>
 
   <TrustStrip />
 
   <!-- Who we are -->
-  <section class="bg-white py-20 sm:py-24 lg:py-28">
+  <section id="intro" class="scroll-mt-24 bg-white py-20 sm:py-24 lg:py-28">
     <div class="wrap grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
       <div data-reveal="left" class="relative">
         <div class="overflow-hidden rounded-2xl shadow-card">
@@ -175,27 +194,55 @@ const teamTeaser = team.slice(0, 3);
     </div>
   </section>
 
-  <!-- Approach — horizontal stepper -->
+  <!-- Approach — sticky-scroll scrollytelling (creative): a navy panel that updates as steps scroll past -->
   <section class="bg-mist py-20 sm:py-24 lg:py-28">
     <div class="wrap">
       <SectionHeading
         eyebrow="How we work"
         title="A clear, five-step approach"
         intro="We work closely with you from the first conversation to the final resolution — understanding the matter, advising candidly and acting with diligence."
-        align="center"
+        class="max-w-2xl"
       />
-      <ol class="relative mt-16 grid gap-y-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-6 reveal-stagger">
-        <div class="absolute left-0 right-0 top-7 hidden h-px bg-brand/20 lg:block" aria-hidden="true"></div>
-        {approach.map((s) => (
-          <li data-reveal class="relative text-center lg:text-left">
-            <div class="relative z-10 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand font-display text-lg font-bold text-white ring-4 ring-mist lg:mx-0">
-              {s.n}
+      <div class="mt-12 lg:mt-16 lg:grid lg:grid-cols-12 lg:gap-12">
+        <!-- Sticky panel (desktop) -->
+        <div class="hidden lg:col-span-5 lg:block">
+          <div class="sticky top-28">
+            <div class="relative isolate overflow-hidden rounded-3xl bg-navy p-10 text-white shadow-card">
+              <div class="absolute inset-0 -z-10 bg-grid opacity-30"></div>
+              <div class="absolute -right-16 -top-16 -z-10 h-48 w-48 rounded-full bg-brand/25 blur-3xl"></div>
+              <div class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-sky-light">
+                Step <span data-ap-index>01</span> / 05
+              </div>
+              <div data-ap-num class="mt-4 font-display text-[5.5rem] font-bold leading-none text-white/15">01</div>
+              <h3 data-ap-title class="mt-2 text-3xl font-semibold text-white">{approach[0].title}</h3>
+              <p data-ap-text class="mt-4 leading-relaxed text-white/75">{approach[0].text}</p>
+              <div class="mt-9 flex gap-2">
+                {approach.map((_, i) => (
+                  <span data-ap-dot={i} class:list={['ap-dot h-1.5 rounded-full transition-all duration-500', i === 0 ? 'w-8 bg-sky' : 'w-4 bg-white/25']}></span>
+                ))}
+              </div>
             </div>
-            <h3 class="mt-5 text-base font-semibold text-navy">{s.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink/70">{s.text}</p>
-          </li>
-        ))}
-      </ol>
+          </div>
+        </div>
+
+        <!-- Steps: scroll cards on mobile, tall blocks that drive the sticky panel on desktop -->
+        <ol class="space-y-4 lg:col-span-7 lg:space-y-0">
+          {approach.map((s, i) => (
+            <li
+              data-ap-step={i}
+              class="ap-step rounded-2xl border border-line bg-white p-7 transition-opacity duration-500 lg:rounded-none lg:border-0 lg:border-b lg:border-line/70 lg:bg-transparent lg:px-0 lg:py-[8vh] lg:opacity-40 lg:first:pt-0 lg:last:border-0"
+            >
+              <div class="flex items-start gap-5">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand font-display text-lg font-bold text-white">{s.n}</div>
+                <div>
+                  <h3 class="text-xl font-semibold text-navy">{s.title}</h3>
+                  <p class="mt-2 leading-relaxed text-ink/70">{s.text}</p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -230,3 +277,50 @@ const teamTeaser = team.slice(0, 3);
 
   <CTABand />
 </BaseLayout>
+
+<script>
+  // Approach scrollytelling — the sticky navy panel reflects whichever step is centred.
+  const steps = Array.from(document.querySelectorAll('[data-ap-step]'));
+  const numEl = document.querySelector('[data-ap-num]');
+  const idxEl = document.querySelector('[data-ap-index]');
+  const titleEl = document.querySelector('[data-ap-title]');
+  const textEl = document.querySelector('[data-ap-text]');
+  const dots = Array.from(document.querySelectorAll('[data-ap-dot]'));
+
+  if (steps.length && titleEl) {
+    const data = steps.map((el) => ({
+      n: el.querySelector('.font-display')?.textContent?.trim() || '',
+      title: el.querySelector('h3')?.textContent?.trim() || '',
+      text: el.querySelector('p')?.textContent?.trim() || '',
+    }));
+
+    const setActive = (idx: number) => {
+      const d = data[idx];
+      if (!d) return;
+      if (numEl) numEl.textContent = d.n;
+      if (idxEl) idxEl.textContent = String(idx + 1).padStart(2, '0');
+      if (titleEl) titleEl.textContent = d.title;
+      if (textEl) textEl.textContent = d.text;
+      steps.forEach((s, i) => s.classList.toggle('is-active', i === idx));
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('w-8', i === idx);
+        dot.classList.toggle('bg-sky', i === idx);
+        dot.classList.toggle('w-4', i !== idx);
+        dot.classList.toggle('bg-white/25', i !== idx);
+      });
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) setActive(Number(e.target.getAttribute('data-ap-step')));
+          });
+        },
+        { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+      );
+      steps.forEach((s) => io.observe(s));
+    }
+    setActive(0);
+  }
+</script>

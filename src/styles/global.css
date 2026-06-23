@@ -219,6 +219,9 @@
 .reveal-stagger > :nth-child(7) { --reveal-delay: 480ms; }
 .reveal-stagger > :nth-child(8) { --reveal-delay: 560ms; }
 
+/* Approach scrollytelling — the centred step brightens (others are dimmed at lg via lg:opacity-40) */
+.ap-step.is-active { opacity: 1; }
+
 /* Hero entrance stagger + slow image zoom */
 .js .hero-stagger > * {
   opacity: 0;
